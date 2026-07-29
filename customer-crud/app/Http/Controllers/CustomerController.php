@@ -33,11 +33,11 @@ class CustomerController extends Controller
     {
         $validated = $request->validate([
             'name'    => 'required|string|max:255',
-            'email'   => 'required|email|unique:customers,email',
-            'phone'   => 'nullable|string|max:20',
+            'email'   => 'required|email|ends_with:@gmail.com|unique:customers,email',
+            'phone'   => 'required|digits:10|unique:customers,phone',
             'address' => 'nullable|string',
             'status'  => 'required|in:active,inactive',
-        ]);
+        ], $this->messages());
 
         Customer::create($validated);
 
@@ -51,7 +51,7 @@ class CustomerController extends Controller
     {
         return view('customers.show', compact('customer'));
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      */
@@ -67,11 +67,11 @@ class CustomerController extends Controller
     {
         $validated = $request->validate([
             'name'    => 'required|string|max:255',
-            'email'   => 'required|email|unique:customers,email,' . $customer->id,
-            'phone'   => 'nullable|string|max:20',
+            'email'   => 'required|email|ends_with:@gmail.com|unique:customers,email,' . $customer->id,
+            'phone'   => 'required|digits:10|unique:customers,phone,' . $customer->id,
             'address' => 'nullable|string',
             'status'  => 'required|in:active,inactive',
-        ]);
+        ], $this->messages());
 
         $customer->update($validated);
 
@@ -86,5 +86,17 @@ class CustomerController extends Controller
         $customer->delete();
 
         return redirect()->route('customers.index')->with('success', 'Customer deleted successfully.');
+    }
+
+    /**
+     * Get custom validation messages.
+     */
+    protected function messages(): array
+    {
+        return [
+            'email.ends_with' => 'Please use a valid Gmail address (@gmail.com).',
+            'phone.digits'    => 'Phone number must contain only 10 digits (077..).',
+            'phone.unique'    => 'This phone number is already registered.',
+        ];
     }
 }
