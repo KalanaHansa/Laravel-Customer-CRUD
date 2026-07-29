@@ -22,7 +22,7 @@ A simple, user-friendly Customer Management application built with **Laravel 12*
 | Name | String | Yes |
 | Email | Email (Unique) | Yes |
 | Phone | String | No |
-| Address | Text | No |
+| Address | String | No |
 | Status | Enum (Active/Inactive) | Yes |
 
 ---
